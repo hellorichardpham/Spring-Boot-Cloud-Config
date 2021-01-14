@@ -49,7 +49,7 @@ public class GeobridgeJobHandler {
 		System.out.println("A refresh was detected. Cancelling all running jobs.");
     	this.taskService.cancelAllJobs();
     	System.out.println("I have finished calling my init method.");
-    	this.init();
+    	this.initializeJobs();
     }
 
 }

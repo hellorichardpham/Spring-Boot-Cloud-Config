@@ -42,12 +42,5 @@ public class ScheduleTaskService {
 		}
 		runningJobs.clear(); 
 	}
-	
-	// I think a different entity should be listening to the refresh action.
-	// This service should just implement whatever needs to happen when a refresh occurs. 
-	//    @EventListener(RefreshScopeRefreshedEvent.class)
-	//    public void onRefresh(RefreshScopeRefreshedEvent event) {
-	//		System.out.println("I HAVE DETECTED A REFRESH EVENT SO I WILL REFRESH ALL OF MY JOBS.");
-	//    }
-	
+		
 }
