@@ -20,22 +20,22 @@ public class JobRestController {
     @Autowired
     ScheduleTaskService taskService;
     
-    @PostMapping(value = "/job", consumes = "application/json")
-    void addJob() { 
-    	Runnable runnable = new Runnable() {
-	        public void run() {
-	        	System.out.println("The time is " + new Date());
-           }
-		};
-        taskService.addTaskToScheduler(1, runnable, new CronTrigger("0/5 * * * * *"));
-        System.out.println("Successfully added job with id: " + 1);
-
-    }
-    
-    @DeleteMapping(value = "/job/{id}")
-    void addJob(@PathVariable(value = "id") int jobId) { 
-    	taskService.removeTaskFromScheduler(jobId);
-    	System.out.println("Successfully removed job with id: " + jobId);
-    }
+//    @PostMapping(value = "/job", consumes = "application/json")
+//    void addJob() { 
+//    	Runnable runnable = new Runnable() {
+//	        public void run() {
+//	        	System.out.println("The time is " + new Date());
+//           }
+//		};
+//        taskService.addTaskToScheduler(1, runnable, new CronTrigger("0/5 * * * * *"));
+//        System.out.println("Successfully added job with id: " + 1);
+//
+//    }
+//    
+//    @DeleteMapping(value = "/job/{id}")
+//    void addJob(@PathVariable(value = "id") int jobId) { 
+//    	taskService.removeTaskFromScheduler(jobId);
+//    	System.out.println("Successfully removed job with id: " + jobId);
+//    }
     
 }

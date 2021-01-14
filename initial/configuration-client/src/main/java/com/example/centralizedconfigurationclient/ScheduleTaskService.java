@@ -1,9 +1,7 @@
 package com.example.centralizedconfigurationclient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 import org.springframework.core.env.Environment;
@@ -22,45 +20,27 @@ public class ScheduleTaskService {
 	// In order to cancel tasks, we need to keep track of which jobs are running in case we want to cancel it.
 	// There is no "Cancel All" function using the scheduler.
 	private List<ScheduledFuture<?>> runningJobs = new ArrayList<ScheduledFuture<?>>();
-	private Map<Integer, ScheduledFuture<?>> jobsMap = new HashMap<>();
 	
-	private final Environment env;
-	
-	public ScheduleTaskService(TaskScheduler scheduler, Environment env) {
+	ScheduleTaskService(TaskScheduler scheduler, Environment env) {
 		this.scheduler = scheduler;
-		this.env = env;
 	}
 	
 	// Added Trigger interface parameter so the client can decide how to schedule the task.
 	// Maybe it'll always be a cron job, so I can just keep it as a CronTrigger? We'll see. 
-	public void addTaskToScheduler(int id, Runnable task, Trigger trigger) {
+	public void addTaskToScheduler(Runnable task, Trigger trigger) {
 		ScheduledFuture<?> scheduledTask = scheduler.schedule(task, trigger);
-		jobsMap.put(id, scheduledTask);
-		System.out.println("message: " + env.getProperty("message"));
-		System.out.println("cron: " + env.getProperty("cron"));
-		System.out.println("geobridge.jobCount: " + env.getProperty("geobridge.jobCount"));
-	}
-	
-	public void removeTaskFromScheduler(Integer id) {
-		ScheduledFuture<?> scheduledTask = jobsMap.get(id);
-		if(scheduledTask != null) {
-			scheduledTask.cancel(true);
-			jobsMap.remove(id);
-		}
+		runningJobs.add(scheduledTask);
 	}
 	
 	public int getJobCount() {
-		return this.jobsMap.size();
+		return this.runningJobs.size();
 	}
 	
-	public boolean hasJobId(Integer id) {
-		return jobsMap.containsKey(id);
-	}
-	
-	public void cancelAllTasks() {
-		for (Integer id : this.jobsMap.keySet()) {
-			this.removeTaskFromScheduler(id);
+	public void cancelAllJobs() {
+		for (ScheduledFuture<?> job : runningJobs) {
+			job.cancel(true);
 		}
+		runningJobs.clear(); 
 	}
 	
 	// I think a different entity should be listening to the refresh action.
